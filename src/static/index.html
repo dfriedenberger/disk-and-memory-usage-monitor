@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disk and Memory Usage Monitor</title>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Disk and Memory Usage Monitor</h1>
+    <div class="usage-container">
+        <div class="usage">
+            <h2>Disk Usage</h2>
+            <div id="disk-usage">
+                <p>Total: <span id="disk-total"></span></p>
+                <p>Used: <span id="disk-used"></span></p>
+                <p>Available: <span id="disk-available"></span></p>
+                <p>Percentage Used: <span id="disk-percent"></span></p>
+            </div>
+            <canvas id="disk-chart"></canvas>
+            <canvas id="disk-line-chart"></canvas>
+        </div>
+        <div class="usage">
+            <h2>Memory Usage</h2>
+            <div id="memory-usage">
+                <p>Total: <span id="memory-total"></span></p>
+                <p>Used: <span id="memory-used"></span></p>
+                <p>Available: <span id="memory-available"></span></p>
+                <p>Percentage Used: <span id="memory-percent"></span></p>
+            </div>
+            <canvas id="memory-chart"></canvas>
+            <canvas id="memory-line-chart"></canvas>
+        </div>
+    </div>
+    <div class="time-range-selector">
+        <label for="time-range">Select Time Range:</label>
+        <select id="time-range">
+            <option value="3_hours">Last 3 Hours</option>
+            <option value="1_day">Last Day</option>
+            <option value="1_week">Last Week</option>
+            <option value="1_month">Last Month</option>
+            <option value="custom">Custom Range</option>
+        </select>
+        <div id="custom-date-range" style="display: none;">
+            <label for="start-date">Start Date:</label>
+            <input type="text" id="start-date">
+            <label for="end-date">End Date:</label>
+            <input type="text" id="end-date">
+        </div>
+        <button id="update-range">Update</button>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+    <script src="script.js"></script>
+</body>
+</html>
