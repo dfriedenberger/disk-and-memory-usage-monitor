@@ -89,7 +89,7 @@ This project is licensed under the MIT License. See the `LICENSE` file for detai
 - [Bootstrap](https://getbootstrap.com/)
 - [Docker](https://www.docker.com/)
 - [Make a README](https://www.makeareadme.com/)
-- [Keep a changelog] (https://keepachangelog.com)
+- [Keep a changelog](https://keepachangelog.com)
 - [C4 Model](https://c4model.com/)
 
 ## Note
