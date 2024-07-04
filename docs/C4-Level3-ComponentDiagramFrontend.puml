@@ -1,0 +1,21 @@
+@startuml
+!define RECTANGLE rectangle
+
+RECTANGLE Frontend {
+    class HTML {
+        - Structure of the webpage
+    }
+    class CSS {
+        - Styles for the webpage
+    }
+    class JavaScript {
+        - jQuery for interactivity
+        - AJAX requests to API
+        - Chart.js for visualizations
+    }
+}
+
+HTML --> CSS : Applies styles
+HTML --> JavaScript : Adds interactivity
+JavaScript --> API : Sends and receives data
+@enduml

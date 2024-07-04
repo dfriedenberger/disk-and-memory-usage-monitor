@@ -1,0 +1,36 @@
+@startuml
+!define RECTANGLE rectangle
+!define ACTOR actor
+
+
+
+RECTANGLE DiskAndMemoryUsageMonitor {
+    RECTANGLE Backend {
+        
+        class FastAPI {
+            - Fetches disk and memory usage data from MySQLDatabase
+            - Provides API endpoints
+        }
+        class Tasks {
+            - Background tasks to fetch usage data periodically
+            - Stores data in MySQLDatabase
+        }
+    }
+    RECTANGLE Frontend {
+        class HTML_CSS_JS {
+            - Displays usage data
+            - Sends requests to API
+        }
+    }
+    RECTANGLE MySQLDatabase {
+        class MySQL {
+            - Stores disk and memory usage data
+        }
+    }
+}
+
+User --> HTML_CSS_JS : Views usage data
+HTML_CSS_JS --> FastAPI : API Requests
+FastAPI --> MySQL : Retrieves data
+Tasks --> MySQL : Stores data
+@enduml

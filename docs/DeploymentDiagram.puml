@@ -1,0 +1,22 @@
+@startuml
+!define NODE node
+
+NODE Server {
+    NODE DockerContainer {
+        NODE Backend {
+            class FastAPI
+            class Tasks
+        }
+        NODE Frontend {
+            class HTML_CSS_JS
+        }
+        NODE MySQL {
+            class MySQLDatabase
+        }
+    }
+}
+
+FastAPI --> MySQLDatabase : Retrieves data
+Tasks --> MySQLDatabase : Store data
+HTML_CSS_JS --> FastAPI : API Requests
+@enduml

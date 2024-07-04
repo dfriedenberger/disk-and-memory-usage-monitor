@@ -13,11 +13,14 @@ def collect_data():
         disk_data = get_disk_usage()
         if disk_data:
             disk_usage = schemas.DiskUsageBase(**disk_data)
+            print("get_disk_usage", disk_usage)
+
             crud.create_disk_usage(db, disk_usage)
 
         memory_data = get_memory_usage()
         if memory_data:
             memory_usage = schemas.MemoryUsageBase(**memory_data)
+            print("get_memory_usage", memory_usage)
             crud.create_memory_usage(db, memory_usage)
 
         db.close()

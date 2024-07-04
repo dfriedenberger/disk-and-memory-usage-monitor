@@ -1,0 +1,15 @@
+@startuml
+!define RECTANGLE rectangle
+!define ACTOR actor
+
+ACTOR User
+RECTANGLE DiskAndMemoryUsageMonitor {
+    RECTANGLE Backend
+    RECTANGLE Frontend
+    RECTANGLE MySQLDatabase
+}
+
+User --> Frontend : Views usage data
+Frontend --> Backend : API Requests
+Backend --> MySQLDatabase : Stores and retrieves data
+@enduml

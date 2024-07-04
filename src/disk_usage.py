@@ -2,7 +2,7 @@ import subprocess
 
 
 def get_disk_usage():
-    path = '/'  # '/host/root'
+    path = '/host/root'
     result = subprocess.run(['df', '-h', path], capture_output=True, text=True, check=True)
     lines = result.stdout.split('\n')
     for line in lines:

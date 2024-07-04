@@ -7,6 +7,17 @@ $(document).ready(function() {
             $("#custom-date-range").hide();
         }
     });
+
+    // Default to last month
+    $("#time-range").val("1_month");
+    let end = new Date();
+    let start = new Date(end.getFullYear(), end.getMonth() - 1, end.getDate());
+    start = start.toISOString();
+    end = end.toISOString();
+
+    fetchDiskUsageHistory(start, end);
+    fetchMemoryUsageHistory(start, end);
+
     $("#update-range").click(function() {
         const range = $("#time-range").val();
         let start, end;
@@ -29,8 +40,8 @@ $(document).ready(function() {
                     start = new Date(end.getFullYear(), end.getMonth() - 1, end.getDate());
                     break;
             }
-            start = start.toISOString().slice(0, 19).replace('T', ' ');
-            end = end.toISOString().slice(0, 19).replace('T', ' ');
+            start = start.toISOString();
+            end = end.toISOString();
         }
         fetchDiskUsageHistory(start, end);
         fetchMemoryUsageHistory(start, end);
@@ -52,7 +63,8 @@ function fetchDiskUsage() {
         $('#disk-percent').text(data.percent);
         updateChart('disk-chart', 'Disk Usage', {
             used: parseFloat(data.used.replace('G', '')),
-            available: parseFloat(data.available.replace('G', ''))
+            available: parseFloat(data.available.replace('G', '')),
+            percent: parseFloat(data.percent.replace('%', ''))
         });
     });
 }
@@ -65,7 +77,8 @@ function fetchMemoryUsage() {
         $('#memory-percent').text(`${data.percent_used.toFixed(2)}%`);
         updateChart('memory-chart', 'Memory Usage', {
             used: data.used_memory / 1024,
-            available: data.available_memory / 1024
+            available: data.available_memory / 1024,
+            percent: data.percent_used
         });
     });
 }
@@ -73,29 +86,28 @@ function fetchMemoryUsage() {
 function fetchDiskUsageHistory(start, end) {
     $.get(`/disk-usage/history?start=${start}&end=${end}`, function(data) {
         const labels = data.map(entry => entry.timestamp);
-        const usedData = data.map(entry => parseFloat(entry.used.replace('G', '')));
-        const availableData = data.map(entry => parseFloat(entry.available.replace('G', '')));
-        updateLineChart('disk-line-chart', 'Disk Usage History', labels, usedData, availableData);
+        const percentUsedData = data.map(entry => entry.percent.replace('%', ''));
+        updateLineChart('disk-line-chart', 'Disk Usage History', labels, percentUsedData);
     });
 }
 
 function fetchMemoryUsageHistory(start, end) {
     $.get(`/memory-usage/history?start=${start}&end=${end}`, function(data) {
         const labels = data.map(entry => entry.timestamp);
-        const usedData = data.map(entry => entry.used_memory / 1024);
-        const availableData = data.map(entry => entry.available_memory / 1024);
-        updateLineChart('memory-line-chart', 'Memory Usage History', labels, usedData, availableData);
+        const percentUsedData = data.map(entry => entry.percent_used);
+        updateLineChart('memory-line-chart', 'Memory Usage History', labels, percentUsedData);
     });
 }
 
 function updateChart(chartId, label, data) {
     const ctx = document.getElementById(chartId).getContext('2d');
+    const usageColor = data.percent < 70 ? '#4CAF50' : data.percent < 90 ? '#FFC107' : '#F44336';
     const chartData = {
         labels: ['Used', 'Available'],
         datasets: [{
             label: label,
             data: [data.used, data.available],
-            backgroundColor: ['#FF6384', '#36A2EB']
+            backgroundColor: [usageColor, '#D3D3D3']
         }]
     };
 
@@ -107,33 +119,31 @@ function updateChart(chartId, label, data) {
             type: 'doughnut',
             data: chartData,
             options: {
-                responsive: true
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
             }
         });
     }
 }
 
-function updateLineChart(chartId, label, labels, usedData, availableData) {
+function updateLineChart(chartId, label, labels, percentUsedData) {
     const ctx = document.getElementById(chartId).getContext('2d');
     const chartData = {
         labels: labels,
         datasets: [
             {
-                label: `${label} - Used`,
-                data: usedData,
+                label: `${label} - Percent Used`,
+                data: percentUsedData,
                 borderColor: '#FF6384',
-                fill: false
-            },
-            {
-                label: `${label} - Available`,
-                data: availableData,
-                borderColor: '#36A2EB',
                 fill: false
             }
         ]
     };
 
-    console.log(charts[chartId],chartId)
     if (charts[chartId]) {
         charts[chartId].data = chartData;
         charts[chartId].update();
@@ -144,10 +154,19 @@ function updateLineChart(chartId, label, labels, usedData, availableData) {
             options: {
                 responsive: true,
                 scales: {
+                    y: {
+                        min: 0,
+                        max: 100,
+                        ticks: {
+                            callback: function(value) {
+                                return value + '%';
+                            }
+                        }
+                    },
                     x: {
                         type: 'time',
                         time: {
-                            unit: 'minute'
+                            unit: 'day'
                         }
                     }
                 }

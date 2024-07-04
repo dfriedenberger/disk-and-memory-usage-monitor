@@ -5,13 +5,11 @@ name: "disk-and-memory-usage"
 services:
   db:
     image: mysql:5.7
-    ports:
-      - "3306:3306"
     environment:
-      MYSQL_DATABASE: disk_memory_db
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
-      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: ${MYSQL_DB}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     volumes:
       - db_data:/var/lib/mysql
     networks:
@@ -19,13 +17,13 @@ services:
   web:
     build: .
     environment:
-      SQLALCHEMY_DATABASE_URL: "mysql+pymysql://user:password@db/disk_memory_db"
+      SQLALCHEMY_DATABASE_URL: "mysql+pymysql://${MYSQL_USER}:${MYSQL_PASSWORD}@db/${MYSQL_DB}"
     volumes:
       - .:/app
       - /:/host/root:ro
       - /proc:/host/proc:ro
     ports:
-      - "8000:8000"
+      - "${WEB_PORT}:8000"
     depends_on:
       - db
     networks:

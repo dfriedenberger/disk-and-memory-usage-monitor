@@ -1,7 +1,7 @@
 
 
 def get_memory_usage():
-    path = 'tmp/meminfo'  # '/host/proc/meminfo'
+    path = '/host/proc/meminfo'
     with open(path, 'r', encoding='UTF-8') as file:
         lines = file.readlines()
         meminfo = {}

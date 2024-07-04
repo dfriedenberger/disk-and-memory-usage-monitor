@@ -1,0 +1,32 @@
+@startuml
+!define RECTANGLE rectangle
+
+RECTANGLE FastAPI {
+    class API {
+        - /disk-usage
+        - /memory-usage
+        - /disk-usage/history
+        - /memory-usage/history
+    }
+    class Database {
+        - SQLAlchemy models
+        - Database connection
+    }
+    class Tasks {
+        - Periodically fetches disk and memory usage
+    }
+    class CRUD {
+        - Create
+        - Read
+        - Update
+        - Delete operations
+    }
+    class Schemas {
+        - Pydantic models
+    }
+}
+
+API --> CRUD : Uses
+Tasks --> CRUD : Invokes
+CRUD --> Database : Uses
+@enduml
