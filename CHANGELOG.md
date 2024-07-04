@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Addressed issues with date adapter in Chart.js.
 - Corrected alignment of pie charts and numerical data in the frontend.
-- replace window variable with hashmap 
+- replace window variable with hashmap
+- Consider the unit when parsing the disk usage
 
 

@@ -55,15 +55,44 @@ $(document).ready(function() {
 
 var charts = {}
 
+function parseDiskSizeToGB(sizeString) {
+    // Example sizeString formats: "123.45 GB", "678.90 MB"
+    const match = sizeString.match(/^([\d.]+)\s*([A-Za-z]+)$/);
+    if (!match) {
+        throw new Error(`Invalid disk size format: ${sizeString}`);
+    }
+
+    const size = parseFloat(match[1]);
+    const unit = match[2].toUpperCase(); // Convert unit to uppercase for consistency
+
+    // Convert to GB based on unit
+    switch (unit) {
+        case 'G':
+            return size;
+        case 'M':
+            return size / 1024;
+        default:
+            throw new Error(`Unsupported unit: ${unit}`);
+    }
+}
+
+
 function fetchDiskUsage() {
     $.get('/disk-usage', function(data) {
-        $('#disk-total').text(data.total);
-        $('#disk-used').text(data.used);
-        $('#disk-available').text(data.available);
+
+        // Parse total, used, and available to GB
+        const totalGB = parseDiskSizeToGB(data.total);
+        const usedGB = parseDiskSizeToGB(data.used);
+        const availableGB = parseDiskSizeToGB(data.available);
+
+
+        $('#disk-total').text(`${totalGB} GB`);
+        $('#disk-used').text(`${usedGB} GB`);
+        $('#disk-available').text(`${availableGB} GB`);
         $('#disk-percent').text(data.percent);
         updateChart('disk-chart', 'Disk Usage', {
-            used: parseFloat(data.used.replace('G', '')),
-            available: parseFloat(data.available.replace('G', '')),
+            used: usedGB,
+            available: availableGB,
             percent: parseFloat(data.percent.replace('%', ''))
         });
     });
