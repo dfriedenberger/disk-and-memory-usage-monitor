@@ -16,10 +16,10 @@ services:
       - app-network
   web:
     build: .
+    container_name: "disk-and-memory-usage-monitor"
     environment:
       SQLALCHEMY_DATABASE_URL: "mysql+pymysql://${MYSQL_USER}:${MYSQL_PASSWORD}@db/${MYSQL_DB}"
     volumes:
-      - .:/app
       - /:/host/root:ro
       - /proc:/host/proc:ro
     ports:
@@ -28,10 +28,14 @@ services:
       - db
     networks:
       - app-network
+      - proxy 
 
 networks:
   app-network:
     driver: bridge
+  proxy:
+    name: "reverse-proxy"
+    external: true
 
 volumes:
   db_data:
